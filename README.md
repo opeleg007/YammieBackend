@@ -31,6 +31,6 @@ Edit an existing order (with a specific id)
 > DELETE localhost:8080/orders/{id}
 Delete a specific order
 
-***** Delete and Edit of on order is only applied if the order was made in the last 15 minutes.
+##### Delete and Edit of on order is only applied if the order was made in the last 15 minutes.
 
 
