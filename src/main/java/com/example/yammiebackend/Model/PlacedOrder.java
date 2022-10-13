@@ -1,11 +1,11 @@
 package com.example.yammiebackend.Model;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 public class PlacedOrder {
@@ -17,8 +17,8 @@ public class PlacedOrder {
 
     private LocalDateTime timeOfOrder;
     private Double price;
-    @OneToMany
-    private List<RestaurantItem> itemList;
+    @ElementCollection
+    private List<String> itemList;
 
     public PlacedOrder() {
         timeOfOrder = LocalDateTime.now();
@@ -33,13 +33,14 @@ public class PlacedOrder {
         this.id = idAssigner++;
     }
 
-    public PlacedOrder(int id, String firstName, String lastName, String email, LocalDateTime timeOfOrder, Double price) {
+    public PlacedOrder(int id, String firstName, String lastName, String email, LocalDateTime timeOfOrder, Double price, List<String> itemList) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.timeOfOrder = timeOfOrder;
         this.price = price;
+        this.itemList = itemList;
     }
 
     public int getId() {
@@ -90,16 +91,12 @@ public class PlacedOrder {
         this.price = price;
     }
 
-    public List<RestaurantItem> getItemList() {
+    public List<String> getItemList() {
         return itemList;
     }
 
-    public void setItemList(List<RestaurantItem> itemList) {
+    public void setItemList(List<String> itemList) {
         this.itemList = itemList;
-    }
-
-    public void addItem(RestaurantItem item) {
-        this.itemList.add(item);
     }
 
     @Override

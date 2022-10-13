@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -39,7 +40,8 @@ class LoadDatabase {
             int id = (int) map.get("id");
             LocalDateTime timeOfOrder = LocalDateTime.parse((String) map.get("timeOfOrder"));
             Double price = (Double) map.get("price");
-            PlacedOrder orderToSave = new PlacedOrder(id, firstName, lastName, email, timeOfOrder, price);
+            List<String> items = (List<String>) map.get("itemList");
+            PlacedOrder orderToSave = new PlacedOrder(id, firstName, lastName, email, timeOfOrder, price, items);
             log.info("Preloading " + orderRepository.save(orderToSave));});
 
         };
