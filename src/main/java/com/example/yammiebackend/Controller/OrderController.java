@@ -26,12 +26,12 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{id}")
-    public PlacedOrder getSingleOrder(@PathVariable Long id) {
+    public PlacedOrder getSingleOrder(@PathVariable int id) {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }
 
     @PutMapping("/orders/{id}")
-    public PlacedOrder changeOrder(@RequestBody PlacedOrder newPlacedOrder, @PathVariable Long id) {
+    public PlacedOrder changeOrder(@RequestBody PlacedOrder newPlacedOrder, @PathVariable int id) {
 
         return orderRepository.findById(id)
                 .map(placedOrder -> {
@@ -50,7 +50,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/{id}")
-    void deleteOrder(@PathVariable Long id) {
+    void deleteOrder(@PathVariable int id) {
         orderRepository.deleteById(id);
     }
 }

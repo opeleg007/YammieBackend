@@ -1,7 +1,6 @@
 package com.example.yammiebackend.Model;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
@@ -10,7 +9,8 @@ import java.util.Objects;
 
 @Entity
 public class PlacedOrder {
-    private @Id @GeneratedValue Long id;
+    static int idAssigner = 1;
+    private @Id int id;
     private String firstName;
     private String lastName;
     private String email;
@@ -22,6 +22,7 @@ public class PlacedOrder {
 
     public PlacedOrder() {
         timeOfOrder = LocalDateTime.now();
+        this.id = idAssigner++;
     }
 
     public PlacedOrder(String firstName, String lastName, String email) {
@@ -29,13 +30,23 @@ public class PlacedOrder {
         this.lastName = lastName;
         this.email = email;
         timeOfOrder = LocalDateTime.now();
+        this.id = idAssigner++;
     }
 
-    public Long getId() {
+    public PlacedOrder(int id, String firstName, String lastName, String email, LocalDateTime timeOfOrder, Double price) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.timeOfOrder = timeOfOrder;
+        this.price = price;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
