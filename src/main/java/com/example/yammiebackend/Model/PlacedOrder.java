@@ -3,44 +3,43 @@ package com.example.yammiebackend.Model;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class PlacedOrder {
     static int idAssigner = 1;
     private @Id int id;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
 
     private LocalDateTime timeOfOrder;
-    private Double price;
     @ElementCollection
     private List<String> itemList;
+    private Status status;
 
     public PlacedOrder() {
         timeOfOrder = LocalDateTime.now();
         this.id = idAssigner++;
+        status = Status.IN_PROGRESS;
     }
 
-    public PlacedOrder(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public PlacedOrder(String name, String email) {
+        this.name = name;
         this.email = email;
         timeOfOrder = LocalDateTime.now();
         this.id = idAssigner++;
+        status = Status.IN_PROGRESS;
     }
 
-    public PlacedOrder(int id, String firstName, String lastName, String email, LocalDateTime timeOfOrder, Double price, List<String> itemList) {
+    public PlacedOrder(int id, String name, String email, LocalDateTime timeOfOrder, List<String> itemList, Status status) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.name = name;
         this.email = email;
         this.timeOfOrder = timeOfOrder;
-        this.price = price;
         this.itemList = itemList;
+        this.status = status;
     }
 
     public int getId() {
@@ -51,20 +50,12 @@ public class PlacedOrder {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -83,20 +74,20 @@ public class PlacedOrder {
         this.timeOfOrder = timeOfOrder;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
     public List<String> getItemList() {
         return itemList;
     }
 
     public void setItemList(List<String> itemList) {
         this.itemList = itemList;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
@@ -112,14 +103,25 @@ public class PlacedOrder {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.firstName, this.lastName, this.email, this.timeOfOrder);
+        return Objects.hash(this.id, this.name, this.email, this.timeOfOrder);
+    }
+
+    private String outputItemListAsString() {
+        String output = "[";
+        for (int i = 0; i < itemList.size(); i++) {
+            output += "\"" + itemList.get(i) + "\"";
+            if (i < itemList.size() - 1)
+                output += ", ";
+        }
+        output += "]";
+        return output;
     }
 
     @Override
     public String toString() {
-        return "Order{" + "id=" + this.id + ", first name='" + this.firstName +
-                '\'' + ", last name='" + this.lastName + '\'' + ", email='" + this.email +
-                '\'' + ", time of order='" + this.timeOfOrder +
-                '\'' + ", price='" + this.price + '\'' + '}';
+        return "{" + "\"id\":" + this.id + ", \"name\":\"" + this.name +
+                '\"' + ", \"email\":\"" + this.email +
+                '\"' + ", \"timeOfOrder\":\"" + this.timeOfOrder +
+                '\"' + ", \"itemList\":" + outputItemListAsString() + '}';
     }
 }
