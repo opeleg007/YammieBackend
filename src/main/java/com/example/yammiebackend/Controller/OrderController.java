@@ -3,7 +3,6 @@ package com.example.yammiebackend.Controller;
 import com.example.yammiebackend.Model.PlacedOrder;
 import com.example.yammiebackend.Repository.OrderNotFoundException;
 import com.example.yammiebackend.Repository.OrderRepository;
-import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedWriter;
@@ -64,32 +63,44 @@ public class OrderController {
 
         return orderRepository.findById(id)
                 .map(placedOrder -> {
-                    placedOrder.setName(newPlacedOrder.getName());
-                    placedOrder.setEmail(newPlacedOrder.getEmail());
-                    placedOrder.setItemList(newPlacedOrder.getItemList());
-                    PlacedOrder toReturn = orderRepository.save(placedOrder);
-                    String filePath = "src\\main\\resources\\static\\order-data.json";
-                    BufferedWriter writer = null;
-                    try {
-                        writer = new BufferedWriter(new FileWriter(filePath));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    try {
-                        writer.write(orderRepository.findAll().toString());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    return toReturn;
-                })
+                    if (placedOrder.canBeEdited()) {
+                        placedOrder.setName(newPlacedOrder.getName());
+                        placedOrder.setEmail(newPlacedOrder.getEmail());
+                        placedOrder.setItemList(newPlacedOrder.getItemList());
+                        PlacedOrder toReturn = orderRepository.save(placedOrder);
+                        String filePath = "src\\main\\resources\\static\\order-data.json";
+                        BufferedWriter writer = null;
+                        try {
+                            writer = new BufferedWriter(new FileWriter(filePath));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        try {
+                            writer.write(orderRepository.findAll().toString());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return toReturn;
+                }return placedOrder;})
                 .orElseGet(() -> {
                     newPlacedOrder.setId(id);
                     return orderRepository.save(newPlacedOrder);
                 });
+    }
+    @DeleteMapping("/orders/{id}")
+    void deleteEmployee(@PathVariable int id) throws IOException {
+        PlacedOrder placedOrder = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        if (placedOrder.canBeEdited()) {
+            orderRepository.deleteById(id);
+            String filePath = "src\\main\\resources\\static\\order-data.json";
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+            writer.write(orderRepository.findAll().toString());
+            writer.close();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.example.yammiebackend.Model;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,8 +10,8 @@ import java.util.Objects;
 
 @Entity
 public class PlacedOrder {
-    static int idAssigner = 1;
-    private @Id int id;
+    //static int idAssigner = 1;
+    private @Id @GeneratedValue int id;
     private String name;
     private String email;
 
@@ -21,7 +22,7 @@ public class PlacedOrder {
 
     public PlacedOrder() {
         timeOfOrder = LocalDateTime.now();
-        this.id = idAssigner++;
+        //this.id = idAssigner++;
         status = Status.IN_PROGRESS;
     }
 
@@ -29,7 +30,7 @@ public class PlacedOrder {
         this.name = name;
         this.email = email;
         timeOfOrder = LocalDateTime.now();
-        this.id = idAssigner++;
+        //this.id = idAssigner++;
         status = Status.IN_PROGRESS;
     }
 
@@ -88,6 +89,12 @@ public class PlacedOrder {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public boolean canBeEdited() {
+        if (LocalDateTime.now().minusMinutes(15).isBefore(timeOfOrder))
+            return true;
+        return false;
     }
 
     @Override
